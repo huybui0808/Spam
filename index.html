@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Công cụ lặp văn bản – Bùi Trung Huy coder</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{--bg:#f4f2fb;--card:#fff;--ink:#1c1933;--mute:#6a6786;--line:#dcd8ef;--acc:#5b4bdb;--acc2:#8a5cf6;--accink:#fff;--soft:#ece9fb;--out:#14112b;--outink:#d9d4ff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0d1f;--card:#181533;--ink:#ece9ff;--mute:#a09cc4;--line:#2d2959;--acc:#8f82ff;--acc2:#b48cff;--accink:#120f2b;--soft:#221e48;--out:#0a0817;--outink:#d9d4ff}}
+:root[data-theme="dark"]{--bg:#0f0d1f;--card:#181533;--ink:#ece9ff;--mute:#a09cc4;--line:#2d2959;--acc:#8f82ff;--acc2:#b48cff;--accink:#120f2b;--soft:#221e48;--out:#0a0817;--outink:#d9d4ff}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:680px;margin:0 auto;padding:22px 16px 28px}
+.hero{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border-radius:20px;padding:24px 22px;margin-bottom:18px;position:relative;overflow:hidden}
+.hero:after{content:"{ }";position:absolute;right:14px;bottom:-14px;font:800 84px/1 "JetBrains Mono",monospace;opacity:.16}
+.by{display:inline-block;background:rgba(255,255,255,.2);border-radius:99px;padding:4px 12px;font-size:.85rem;font-weight:600;margin-bottom:10px}
+h1{font-size:1.7rem;line-height:1.2;margin:0 0 6px;font-weight:800}
+.hero p{margin:0;opacity:.9}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 6px 24px rgba(60,40,140,.08)}
+label.t{display:block;font-weight:600;margin:16px 0 6px}
+label.t:first-child{margin-top:0}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--soft);padding:5px;border-radius:12px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{text-align:center;padding:9px 4px;border-radius:9px;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--mute)}
+.seg input:checked+label{background:var(--card);color:var(--acc);box-shadow:0 2px 8px rgba(60,40,140,.18)}
+.seg input:focus-visible+label{outline:3px solid var(--acc)}
+textarea,input[type=number]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px}
+textarea{min-height:92px;resize:vertical}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+button{font:inherit;font-weight:600;border-radius:12px;padding:12px 18px;border:1px solid var(--line);cursor:pointer;background:transparent;color:var(--ink)}
+button.primary{flex:1;background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--accink);border:0}
+button:active{transform:scale(.97)}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.head b{font-weight:600}
+#cnt{color:var(--mute);font-size:.88rem}
+#out{min-height:180px;background:var(--out);color:var(--outink);border:0;font:14px/1.6 "JetBrains Mono",ui-monospace,Menlo,monospace;white-space:pre;overflow:auto}
+.note{color:var(--mute);font-size:.9rem;margin:10px 0 0;min-height:1.4em}
+footer{text-align:center;color:var(--mute);font-size:.9rem;padding-top:6px}
+footer b{color:var(--acc)}
+</style>
+</head>
+<body>
+<main>
+<section class="hero">
+  <span class="by">Bùi Trung Huy coder</span>
+  <h1>Công cụ lặp văn bản</h1>
+  <p>Nhập nội dung, chọn số lần, bấm tạo rồi sao chép.</p>
+</section>
+
+<section class="card">
+  <label class="t">Chế độ</label>
+  <div class="seg">
+    <input type="radio" name="mode" id="m1" value="1" checked><label for="m1">Có số thứ tự</label>
+    <input type="radio" name="mode" id="m2" value="2"><label for="m2">Không số</label>
+    <input type="radio" name="mode" id="m3" value="3"><label for="m3">Chỉ số</label>
+  </div>
+  <div id="textBox">
+    <label class="t" for="txt">Đoạn văn bản</label>
+    <textarea id="txt" placeholder="Nhập nội dung cần lặp"></textarea>
+  </div>
+  <label class="t" for="n">Số lần lặp (tối đa 10.000)</label>
+  <input type="number" id="n" min="1" max="10000" value="10" inputmode="numeric">
+  <div class="row">
+    <button class="primary" id="go">Tạo</button>
+    <button id="copy">Sao chép</button>
+    <button id="clear">Xóa</button>
+  </div>
+  <p class="note" id="msg" role="status"></p>
+</section>
+
+<section class="card">
+  <div class="head"><b>Kết quả</b><span id="cnt">0 dòng</span></div>
+  <textarea id="out" readonly aria-label="Kết quả"></textarea>
+</section>
+
+<footer>Làm bởi <b>Bùi Trung Huy coder</b></footer>
+</main>
+<script>
+var $=function(i){return document.getElementById(i)};
+var MAX=10000;
+function mode(){return document.querySelector('input[name=mode]:checked').value}
+function sync(){$('textBox').style.display=mode()==='3'?'none':'block'}
+document.querySelectorAll('input[name=mode]').forEach(function(r){r.addEventListener('change',sync)});
+sync();
+$('go').onclick=function(){
+  var m=mode(),t=$('txt').value,n=parseInt($('n').value,10);
+  if(!(n>=1)){$('msg').textContent='Nhập số lần lặp từ 1 trở lên.';return}
+  if(n>MAX){n=MAX;$('n').value=MAX}
+  if(m!=='3'&&!t.trim()){$('msg').textContent='Nhập đoạn văn bản cần lặp.';return}
+  var a=[];
+  for(var i=1;i<=n;i++){a.push(m==='1'?i+'. '+t:m==='2'?t:String(i))}
+  $('out').value=a.join('\n');
+  $('cnt').textContent=n+' dòng';
+  $('msg').textContent='Đã tạo xong.';
+};
+$('copy').onclick=function(){
+  var o=$('out');if(!o.value){$('msg').textContent='Chưa có kết quả để sao chép.';return}
+  var done=function(){$('msg').textContent='Đã sao chép.'};
+  var old=function(){o.select();document.execCommand('copy');done()};
+  try{navigator.clipboard.writeText(o.value).then(done,old)}catch(e){old()}
+};
+$('clear').onclick=function(){$('out').value='';$('txt').value='';$('cnt').textContent='0 dòng';$('msg').textContent=''};
+</script>
+</body>
+</html>
